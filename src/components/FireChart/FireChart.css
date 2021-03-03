@@ -1,0 +1,41 @@
+.page-container{
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.header-title-text{
+  padding: 2rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.1rem;
+}
+
+.prices-grid-container{
+  display: grid;
+  width: 100%;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.chart-container{
+  width: 60%;
+  margin: 2rem;
+}
+
+.spot-label{
+  color: #E44722;
+}
+
+.eagle-label{
+  color: #64932B;
+}
+
+.generic-label{
+  color: #29889D;
+}
+
+input[type='checkbox']{
+  cursor: pointer;
+}
