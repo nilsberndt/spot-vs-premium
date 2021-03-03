@@ -19,9 +19,25 @@
   grid-template-rows: 1fr;
 }
 
+.tooltip-label{
+  font-size: 3rem;
+  padding: 2rem 0 0;
+  transition: color .2s;
+}
+
+.tooltip-date{
+  font-size: 1rem;
+  padding: 0 0 2rem;
+  transition: color .2s;
+}
+
+.last-updated-label{
+  font-size: 0.75rem;
+  padding: 2rem 0 0;
+}
+
 .chart-container{
   width: 60%;
-  margin: 2rem;
 }
 
 .spot-label{
@@ -38,4 +54,31 @@
 
 input[type='checkbox']{
   cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  .header-title-text{
+    padding: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .prices-grid-container{
+    justify-items: start;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+
+  .chart-container{
+    width: 100%;
+  }
+
+  .tooltip-label{
+    font-size: 2rem;
+    padding: 1rem 0 0;
+  }
+
+  .tooltip-date{
+    font-size: 0.75rem;
+    padding: 0 0 1rem;
+  }
 }

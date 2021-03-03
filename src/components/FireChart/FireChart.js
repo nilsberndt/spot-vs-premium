@@ -6,16 +6,32 @@ import {
   Line,
   defaults,
 } from 'react-chartjs-2'
+import "chartjs-plugin-lineheight-annotation"
 
 defaults.global.defaultFontFamily = "'Open Sans', sans-serif"
+defaults.global.elements.point.radius = 0
+defaults.global.elements.point.hitRadius = 10
+defaults.global.elements.point.hoverRadius = 10
 
 const chartOptions = {
+  lineHeightAnnotation: {
+    always: false,
+    hover: true,
+    color: "#00000026",
+    shadow: false,
+    yAxis: 'A',
+    noDash: true,
+    lineWeight: 5,
+  },
   legend: {
     display: false,
   },
   scales: {
     xAxes: [{
       type: 'time',
+      time: {
+        unit: 'hour'
+      },
       ticks: {
         autoSkip: true,
         maxTicksLimit: 8.1,
@@ -37,7 +53,7 @@ const chartOptions = {
       ticks: {
         display: false,
         callback: function(value, index, values) {
-          return value.toLocaleString("en-US",{style:"currency", currency:"USD"});
+          return value.toLocaleString("en-US",{style:"currency", currency:"USD"})
         },
         autoSkip: true,
         maxTicksLimit: 5.1,
@@ -54,7 +70,7 @@ const chartOptions = {
         display: false,
         callback: function (value) {
           const modValue = value / 100
-          return modValue.toLocaleString('en-US', {style:'percent', minimumSignificantDigits: 3});
+          return modValue.toLocaleString('en-US', {style:'percent', minimumSignificantDigits: 3})
         },
         autoSkip: true,
         maxTicksLimit: 5.1,
@@ -71,7 +87,7 @@ const chartOptions = {
         display: false,
         callback: function (value) {
           const modValue = value / 100
-          return modValue.toLocaleString('en-US', {style:'percent', minimumSignificantDigits: 3});
+          return modValue.toLocaleString('en-US', {style:'percent', minimumSignificantDigits: 3})
         },
         autoSkip: true,
         maxTicksLimit: 5.1,
@@ -107,8 +123,40 @@ class FireChartBase extends React.Component {
       silverSpotDataSet: {},
       silverEagleDataSet: {},
       silverGenericDataSet: {},
+      tooltip: {
+        color: 'transparent',
+        date: new Date().toLocaleString(),
+        value: '$0.00',
+      },
     }
 
+  }
+
+  showToolTip = (tooltip) => {
+    if (tooltip.dataPoints) {
+      const {
+        label,
+        value,
+        datasetIndex,
+      } = tooltip.dataPoints[0]
+
+      const tooltipData = {
+        color: tooltip.labelColors[0].borderColor,
+        date: new Date(label).toLocaleString(),
+        value: datasetIndex === 0 
+          ? `$${parseFloat(value).toFixed(2)}` 
+          : `${parseFloat(value).toFixed(2)}%`
+      }
+      this.setState({
+        tooltip: tooltipData,
+      })
+    } else {
+      let modState = this.state.tooltip
+      modState.color = 'transparent'
+      this.setState({
+        tooltip: modState
+      })
+    }
   }
 
   deriveData(newData) {
@@ -119,9 +167,9 @@ class FireChartBase extends React.Component {
     })
     const dataVals = Object.values(newData)
     this.setState({
-      chartLabels: parsedDates
+      chartLabels: parsedDates.filter((item, idx) => idx % 5 === 0 && item)
     })
-    return dataVals
+    return dataVals.filter((item, idx) => idx % 5 === 0 && item)
   }
 
   datasetKeyProvider() { 
@@ -149,8 +197,6 @@ class FireChartBase extends React.Component {
           borderColor: '#E44722',
           pointBackgroundColor: '#E44722',
           pointBorderWidth: 0,
-          pointRadius: 0,
-          pointHitRadius: 10,
           data: this.deriveData(snapshot.val())
         }
       })
@@ -173,8 +219,6 @@ class FireChartBase extends React.Component {
           borderColor: '#64932B',
           pointBackgroundColor: '#64932B',
           pointBorderWidth: 0,
-          pointRadius: 0,
-          pointHitRadius: 10,
           data: this.deriveData(snapshot.val())
         }
       })
@@ -197,8 +241,6 @@ class FireChartBase extends React.Component {
           borderColor: '#29889D',
           pointBackgroundColor: '#29889D',
           pointBorderWidth: 0,
-          pointRadius: 0,
-          pointHitRadius: 10,
           data: this.deriveData(snapshot.val())
         }
       })
@@ -263,17 +305,25 @@ class FireChartBase extends React.Component {
               </label>
             </div>
         </div>
+        <span style={{color: this.state.tooltip.color}} className="tooltip-label"><b>{this.state.tooltip.value}</b></span>
+        <span style={{color: this.state.tooltip.color}} className="tooltip-date">{this.state.tooltip.date}</span>
         <div className="chart-container">
           <Line
             datasetKeyProvider={this.datasetKeyProvider}
-            options={chartOptions}
+            options={{
+              tooltips: {
+                enabled: false,
+                custom: this.showToolTip,
+              },
+              ...chartOptions
+            }}
             data={{
               labels: this.state.chartLabels,
               datasets: this.determineDataSets()
             }}
           />
         </div>
-        <h4>Last Updated: {this.state.lastUpdatedTime}</h4>
+        <span className="last-updated-label"><b>Last Updated: {this.state.lastUpdatedTime}</b></span>
       </div>
     )
   }
