@@ -43,13 +43,13 @@ const scrapeAllSpots = async () => {
 
 const scrapeSilverEagles = async () => {
   const rawPrice = await scrapeItem(silverEagleSites.bullionExchanges)
-  const finalPrice = (parseFloat(rawPrice) + 1.50).toFixed(2)
+  const finalPrice = (parseFloat(rawPrice) * 1.07).toFixed(2)
   return finalPrice
 }
 
 const scrapeSilverGenerics = async () => {
   const rawPrice = await scrapeItem(silverGenericSites.bullionExchanges)
-  const finalPrice = (parseFloat(rawPrice) + 2.00).toFixed(2)
+  const finalPrice = (parseFloat(rawPrice) * 1.07).toFixed(2)
   return finalPrice
 }
 

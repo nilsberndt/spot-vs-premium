@@ -40,6 +40,10 @@
   width: 60%;
 }
 
+.chart-container:hover{
+  cursor: crosshair;
+}
+
 .spot-label{
   color: #E44722;
 }
